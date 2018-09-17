@@ -14,19 +14,6 @@ def download(show):
 			seasons = [int(x) for x in seasons]
 	return link, seasons, name
 
-def download_top_250():
-	page = requests.get("https://www.imdb.com/chart/toptv?ref_=tt_awd")
-	soup = BeautifulSoup(page.text, "html.parser")
-
-	links = soup.find_all('td')
-	for link in links:
-		l = (str(link.get('class')))
-		print(l)
-		
-
-
-
-
 def get_eps(season, location):
 	ep_num = 1
 	eps = []
