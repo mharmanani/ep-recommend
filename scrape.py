@@ -9,10 +9,14 @@ def download(show):
 	for line in file:
 		if line.startswith("<SHOW>"):
 			name = file.readline().strip()
-			link = file.readline().strip()
-			seasons = file.readline().split()
-			seasons = [int(x) for x in seasons]
-	return link, seasons, name
+			if show in name:
+				link = file.readline().strip()
+				seasons = file.readline().split()
+				seasons = [int(x) for x in seasons]
+				print(seasons)
+				return link, seasons, name
+			else: continue
+	return (None, None, None)
 
 def get_eps(season, location):
 	ep_num = 1
@@ -77,5 +81,3 @@ def make_ep_guide(seasons, fname, link):
 		f.write("------------- \n")
 	print("--")
 	print("Done!")
-
-download_top_250()
