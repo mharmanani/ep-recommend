@@ -1,7 +1,7 @@
 # TV Episode Recommendation System
 A command line interface for recommending TV episodes based on ratings and keyword matching.
 
-##How it works
+## How it works
 The program reads from the *SHOWS* file, which contains structured data about each TV show it uses for its computations. 
 The file is structured this way: ![alt text] img/example1.png
 
