@@ -99,13 +99,15 @@ def main():
 		elif usr_in.startswith("download"):
 			if 1: 
 				line = usr_in.split()
-				show = ''.join(line[1:])
+				show = ' '.join(line[1:])
 				link, seasons, name = download(show)
 				alias = input("Use an alias? (y/n) ")
 				if alias == "y":
 					alias = input("[ALIAS] ")
 					name = alias
-				make_ep_guide(seasons, name, link)
+				if seasons and name and link:
+					make_ep_guide(seasons, name, link)
+				else: print("[ERROR] Missing data in SHOWS file...")
 			else: print("[ERROR] Something went wrong :/")
 	
 main()
