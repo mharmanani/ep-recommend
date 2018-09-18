@@ -3,6 +3,7 @@ A command line interface for recommending TV episodes based on ratings and keywo
 
 ## How it works
 The program reads from the *SHOWS* file, which contains structured data about each TV show it uses for its computations. 
+
 The file is structured this way: 
 ```
 <SHOW>
@@ -11,7 +12,6 @@ https://imdb.com/title/ttsmtgsmtg/
 1 2 3 4 5
 </SHOW>
 ```
-![alt text](img/example1.png) ![alt text](img/example2.png)
 
 After all the necessary data has been included in the *SHOWS* file, the program is ready to be used.
 
