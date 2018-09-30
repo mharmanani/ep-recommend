@@ -29,4 +29,13 @@ Description here...
 ```
 * __load *show*__: Load a TV show from its respective local file into the program's memory. 
 * __top *n*__: List the top rated *n* episodes.
-* __recommend__: The user is prompted for a certain number *n* of recommendations, and set of keywords. The program will then return at most *n* episodes that match the chosen keywords.
+* __find__: The user is prompted for a certain number *n* of recommendations, and set of keywords. The program will then return at most *n* episodes that match the chosen keywords.
+
+```
+epRec 1.1 > find
+[MAX RECOMMENDATIONS] 2
+[KEYWORDS] some words im looking for
+S01E02. Some episode (23.45%)
+S03E05. Some other episode (7.88%)
+S02E19. Yet another episode (1.3%)
+```
