@@ -69,7 +69,7 @@ def main():
 					print("--")
 				else: print("[ERROR] No show selected :/")
 			except: print("[ERROR] Invalid n - not a number: " + line[1]) 
-		elif usr_in == "recommend":
+		elif usr_in == "find":
 			if show:
 				try: 
 					n = input("[MAX RECOMMENDATIONS] ")
@@ -77,6 +77,7 @@ def main():
 				except: 
 					print("[ERROR] Invalid n - not a number: " + str(n))
 					continue
+				H = MaxEpisodeHeap()
 				desc = input("[KEYWORDS] ")
 				desc = desc.lower()
 				eps = parse_ep(open(show))
@@ -84,18 +85,16 @@ def main():
 				rates = []
 				for ep in eps:
 					j = jaccard(desc.split(), eps[ep])
-					rates += [(j*(float(ep.rating)/10), ep.title)]
-				rates.sort()
-				rates = rates[::-1]
-				matches = []
+					ep.rating = (j*(float(ep.rating)))
+					H.insert(ep)
+				if H.get_max().rating == 0:
+					print("No matches! Sorry :(")
+					continue
 				while n > 0:
-					if rates[0][0] > 0:
-						matches += [rates[0]]
-					rates = rates[1:]
+					e = H.extract_max()
+					if e.rating != 0:
+						print(e.code + ". " + e.title + " ({0}%)".format(round(e.rating*100, 2)) )
 					n -= 1
-				if matches:
-					for match in matches: print(match)
-				else: print("No matches! Please try again :(")
 		elif usr_in.startswith("download"):
 			if 1: 
 				line = usr_in.split()
