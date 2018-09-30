@@ -33,6 +33,10 @@ def clean_sentence(sentence):
 	_filter.add("and")
 	filtered = []
 	for word in sentence.split():
+		try: 
+			for syn in wn.synsets(word): 
+				filtered += [syn.name()[:syn.name().find(".")]]
+		except: pass
 		if not word.lower() in _filter:
 			word = word.lower()
 			word = remove_punc(word)
