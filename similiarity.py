@@ -35,7 +35,9 @@ def clean_sentence(sentence):
 	for word in sentence.split():
 		try: 
 			for syn in wn.synsets(word): 
-				filtered += [syn.name()[:syn.name().find(".")]]
+				clean_syn = syn.name()[:syn.name().find(".")]
+				if not clean_syn in filtered:
+					filtered += [clean_syn]
 		except: pass
 		if not word.lower() in _filter:
 			word = word.lower()
