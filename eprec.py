@@ -96,17 +96,31 @@ def main():
 						print(e.code + ". " + e.title + " ({0}%)".format(round(e.rating*100, 2)) )
 					n -= 1
 		elif usr_in.startswith("download"):
-			if 1: 
-				line = usr_in.split()
-				show = ' '.join(line[1:])
-				link, seasons, name = download(show)
-				alias = input("Use an alias? (y/n) ")
-				if alias == "y":
-					alias = input("[ALIAS] ")
-					name = alias
-				if seasons and name and link:
-					make_ep_guide(seasons, name, link)
-				else: print("[ERROR] Missing data in SHOWS file...")
-			else: print("[ERROR] Something went wrong :/")
+			line = usr_in.split()
+			show = ' '.join(line[1:])
+			link, seasons, name = download(show)
+			alias = input("Use an alias? (y/n) ")
+			if alias == "y":
+				alias = input("[ALIAS] ")
+				name = alias
+			if seasons and name and link:
+				make_ep_guide(seasons, name, link)
+			else: print("[ERROR] Missing data in SHOWS file...")
+		elif usr_in.startswith("compare"):
+			if show:
+				n = input("[COMPARE EP] ")
+				eps = parse_ep(open(show))
+				eps = clean_dict(eps)
+				ep1 = None
+				for ep in eps:
+					if n == ep.title:
+						ep1 = ep
+						break
+				if not ep1: 
+					print("[ERROR] Invalid episode name - not found: " + str(n))
+					continue
+				m = input("[WITH EP] ")
+				
+
 	
 main()
