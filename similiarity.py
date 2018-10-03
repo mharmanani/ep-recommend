@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np 
 from structures import *
+import sqlite3 as sql
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.tokenize import word_tokenize 
@@ -17,6 +18,32 @@ def parse_ep(eps):
 			e.description = eps.readline().strip()
 			d[e] = e.description
 	return d
+
+def parse_eps(db_name, table):
+	d = {}
+	db = sql.connect(db_name)
+	cursor = db.cursor()
+	cursor.execute(""" SELECT * FROM {0}""".format(table))
+	for ep in cursor.fetchall():
+		e = Episode(title=ep[1].replace("_", " "), rate=ep[2], 
+					code=ep[0].replace("_", ""), desc=ep[2].replace("._", " "))
+		d[e] = e.description
+	return d
+
+def test():
+	import time
+	start = time.time()
+	parse_ep("GoT")
+	end = time.time()
+	t1 = end - start
+
+	start = time.time()
+	parse_eps("SHOWS.db", "GoT")
+	end = time.time()
+	t2 = end - start
+	print("without DB: ", t1)
+	print("with DB: ", t2)
+	print(t1 > t2)
 
 def remove_punc(word):
 	PUNC = [",", ".", "'",'"', ";"]
@@ -123,3 +150,5 @@ def cosine_sim(u, v):
 	nv = np.linalg.norm(v)
 	dot_prod = np.dot(np.array(u), np.array(v))
 	return dot_prod / (nu*nv)
+
+test()
