@@ -2,7 +2,10 @@ import requests
 import re
 import sys
 from bs4 import BeautifulSoup
+import sqlite3 as sql
 from structures import Episode
+
+SHOWS_DB = "SHOWS.db"
 
 def download(show):
 	file = open("SHOWS")
@@ -11,9 +14,8 @@ def download(show):
 			name = file.readline().strip()
 			if show in name:
 				link = file.readline().strip()
-				seasons = file.readline().split()
-				seasons = [int(x) for x in seasons]
-				print(seasons)
+				seasons = list(range(1,int(file.readline())+1))
+				#print(seasons)
 				return link, seasons, name
 			else: continue
 	return (None, None, None)
@@ -70,14 +72,38 @@ def get_blurbs_and_ratings(season, location):
 
 	return descriptions, ratings
 
-def make_ep_guide(seasons, fname, link):
-	print("Initializing episode guide...")
-	f = open(fname, "w")
+def make_ep_guide(seasons, name, link):
+	#f = open(fname, "w")
+	db = sql.connect(SHOWS_DB)
+	cursor = db.cursor()
+	cursor.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
+	tables = [x[0] for x in cursor.fetchall()]
+	print(tables)
+	if name in tables:
+		print("TV show already exists: table name", name)
+		return 0
+	else:
+		print("Initializing episode guide...")
+		cmd = """CREATE TABLE {0} 
+				( ep_code TEXT PRIMARY KEY NOT NULL
+				, ep_name TEXT NOT NULL
+				, ep_rating TEXT NOT NULL 
+				, ep_desc TEXT NOT NULL ); """.format(name)
+		print(cmd)
+		cursor.execute(cmd)
+		show = name
 	for season in seasons:
-		f.write("Season " + str(season) + ": \n")
+		#f.write("Season " + str(season) + ": \n")
 		for episode in get_eps(str(season), link):
-			f.write(str(episode) + " \n")
-			f.write(episode.description + "\n")
-		f.write("------------- \n")
+			name = str(episode.title.replace(" ", "_"))
+			rating = str(episode.rating.replace(" ", "_"))
+			code = str(episode.code.replace(" ", "_"))
+			des = str(episode.description.replace(" ", "_"))
+			cmd = """ INSERT INTO {0} VALUES (?, ?, ?, ?);""".format(show)
+			params = (code, name, rating, des)
+			#print(cmd, params)
+			with db: cursor.execute(cmd, params)
+		#f.write("------------- \n")
 	print("--")
 	print("Done!")
+	return 0
