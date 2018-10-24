@@ -30,21 +30,6 @@ def parse_eps(db_name, table):
 		d[e] = e.description
 	return d
 
-def test():
-	import time
-	start = time.time()
-	parse_ep("GoT")
-	end = time.time()
-	t1 = end - start
-
-	start = time.time()
-	parse_eps("SHOWS.db", "GoT")
-	end = time.time()
-	t2 = end - start
-	print("without DB: ", t1)
-	print("with DB: ", t2)
-	print(t1 > t2)
-
 def remove_punc(word):
 	PUNC = [",", ".", "'",'"', ";"]
 	for c in word:
