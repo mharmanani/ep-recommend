@@ -1,21 +1,21 @@
 from structures import *
 from similiarity import *
 from scrape import *
+import sqlite3 as sql
 
 KEYS = ["\x1b[A", "^[[C", "^[[D", "^[[B"]
+ALIAS_F = "ALIAS"
+SHOWS = "SHOWS.db"
 
-def init_ep_heap(ep_file):
+def init_ep_heap(ep_table):
+	db = sql.connect(SHOWS)
+	cursor = db.cursor()
 	H = MaxEpisodeHeap()
-	for line in ep_file:
-		if line.startswith("Season"):
-			continue
-		if line.startswith("S"):
-			ep = Episode( title=line[line.find(" "):line.find("(")], 
-						  code=line[:line.find(" ")],
-						  rate=line[line.find("(")+1:line.rfind("/")] 
-						)
-			ep.description = ep_file.readline()
-			H.insert(ep)
+	cursor.execute(""" SELECT * FROM {0}""".format(ep_table))
+	for ep in cursor.fetchall():
+		e = Episode(title=ep[1].replace("_", " "), rate=ep[2], 
+					code=ep[0].replace("_", ""), desc=ep[2].replace("._", " "))
+		H.insert(e)
 	return H
 
 def get_top_rated(H, n):
@@ -63,7 +63,7 @@ def main():
 			try: 
 				n = int(line[1])
 				if show: 
-					H = init_ep_heap(open(show))
+					H = init_ep_heap(show)
 					print("--")
 					get_top_rated(H, n)
 					print("--")
@@ -78,10 +78,8 @@ def main():
 					print("[ERROR] Invalid n - not a number: " + str(n))
 					continue
 				H = MaxEpisodeHeap()
-				desc = input("[KEYWORDS] ")
-				desc = desc.lower()
-				eps = parse_ep(open(show))
-				eps = clean_dict(eps)
+				desc = input("[KEYWORDS] ").lower()
+				eps = clean_dict(parse_eps(SHOWS, show))
 				rates = []
 				for ep in eps:
 					j = jaccard(desc.split(), eps[ep])
@@ -93,16 +91,14 @@ def main():
 				while n > 0:
 					e = H.extract_max()
 					if e.rating != 0:
-						print(e.code + ". " + e.title + " ({0}%)".format(round(e.rating*100, 2)) )
+						print(e.code + " " + e.title + " ({0}%)".format(round(e.rating, 2)) )
 					n -= 1
 		elif usr_in.startswith("download"):
 			line = usr_in.split()
 			show = ' '.join(line[1:])
 			link, seasons, name = download(show)
-			alias = input("Use an alias? (y/n) ")
-			if alias == "y":
-				alias = input("[ALIAS] ")
-				name = alias
+			alias = input("[ALIAS] ")
+			name = alias
 			if seasons and name and link:
 				make_ep_guide(seasons, name, link)
 			else: print("[ERROR] Missing data in SHOWS file...")
