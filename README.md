@@ -37,5 +37,4 @@ epRec 1.1 > find
 [KEYWORDS] some words im looking for
 S01E02. Some episode (23.45%)
 S03E05. Some other episode (7.88%)
-S02E19. Yet another episode (1.3%)
 ```
