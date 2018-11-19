@@ -78,7 +78,6 @@ def make_ep_guide(seasons, name, link):
 	cursor = db.cursor()
 	cursor.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
 	tables = [x[0] for x in cursor.fetchall()]
-	print(tables)
 	if name in tables:
 		print("TV show already exists: table name", name)
 		return 0
@@ -89,7 +88,6 @@ def make_ep_guide(seasons, name, link):
 				, ep_name TEXT NOT NULL
 				, ep_rating TEXT NOT NULL 
 				, ep_desc TEXT NOT NULL ); """.format(name)
-		print(cmd)
 		cursor.execute(cmd)
 		show = name
 	for season in seasons:
